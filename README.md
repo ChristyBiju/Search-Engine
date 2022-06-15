@@ -25,4 +25,5 @@ Step 3: Type ./main [Respective function command] in terminal to run the project
 ```
 
 ## References : 
-* [(https://www.researchgate.net/publication/341998459_The_Role_of_Trie_data_structure_in_string_processing)]
+* https://www.researchgate.net/publication/341998459_The_Role_of_Trie_data_structure_in_string_processing
+* 
