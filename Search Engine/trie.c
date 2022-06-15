@@ -205,9 +205,8 @@ void suggestions(node_trie *root, char currPrefix[])
 
             if (root->space == 1)
             {
-                // strcat(currPrefix,"a");
-                // currPrefix[strlen(currPrefix)] = 'a';
-                currPrefix[strlen(currPrefix) - 1] = ' ';
+                strcat(currPrefix,"");
+                //currPrefix[strlen(currPrefix) - 1] = ' ';
             }
             
             strncat(currPrefix, &c, 1);
