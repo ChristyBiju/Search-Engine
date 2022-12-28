@@ -28,3 +28,5 @@ Step 3: Type ./main [Respective function command] in terminal to run the project
 * https://www.researchgate.net/publication/341998459_The_Role_of_Trie_data_structure_in_string_processing
 * http://dept.cs.williams.edu/~cs136/lectures/aaron/25-splay.pdf
 
+## Author :
+* Christy Biju (MIS 112003031)
