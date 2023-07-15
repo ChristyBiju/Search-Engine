@@ -29,4 +29,4 @@ Step 3: Type ./main [Respective function command] in terminal to run the project
 * http://dept.cs.williams.edu/~cs136/lectures/aaron/25-splay.pdf
 
 ## Author :
-* Christy Biju (MIS 112003031)
+* Christy Biju (https://github.com/ChristyBiju)
