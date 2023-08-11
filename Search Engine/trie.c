@@ -26,9 +26,10 @@ node_trie *new_node()
     return t;
 }
 
-// to insert the entire database from the file into the trie
+
 node_trie *insert_from_file()
 {
+
     node_trie *root = NULL;
 
     // creating a new node at root
@@ -51,7 +52,7 @@ node_trie *insert_from_file()
     node_trie *tmp = root;
 
     // opening the database file
-    FILE *fp = fopen("database.txt", "r+");
+    FILE *fp = fopen("db.txt", "r+");
     if (!fp)
     {
         printf("Error in opening the database.");
@@ -60,30 +61,41 @@ node_trie *insert_from_file()
     char quest[10000];
     char ans[200000];
 
-    // inserting all the questions from the database in the trie
-    while ((fscanf(fp, "%s", quest)) != EOF)
+char *line = NULL;
+size_t len = 0;
+    // inserting all the questions and answers from the database in the trie
+    while (getline(&line, &len, fp) != -1)
     {
-        // stores the ans after question in the ans array (ignoring the whitespace)
-        fgets(ans, 200000, fp);
+        char *separator = strstr(line, " ? ");
+    if (separator == NULL)
+    {
+        // If " - " is not found, the line format is incorrect, handle this error case if needed
+        printf("Error: Incorrect line format: %s\n", line);
+        continue;
+    }
 
+    // Extract the question and answer strings
+    *separator = '\0'; // Null-terminate the question part
+    char *quest = line;
+    char *ans = separator + 3; // Move past " - " to point to the start of the answer
+
+        // Insert the question into the trie
         int quest_len = strlen(quest);
-        for (i = 0; i < quest_len; i++)
+        for (int i = 0; i < quest_len; i++)
         {
-            
-            // checking if the character of the quest is alphabet or not
             if (isalpha(quest[i]))
             {
-                // converting all the characters in lower case
+                // Convert all the characters in lower case
                 index = (int)tolower(quest[i]) - 'a';
             }
-            
-            if (quest[i] == '1')
+            else if (quest[i] == ' ')
             {
+                // Handle spaces in the question
                 tmp->space = 1;
                 continue;
             }
-            
-            // for handling characters which are not alphabets
+
+            // ... Rest of the code remains unchanged ...
             if (index > 25 || index < 0)
             {
                 continue;
@@ -111,16 +123,24 @@ node_trie *insert_from_file()
                 tmp = tmp->child[index];
             }
             // after reaching the end node (i.e. last character) make the value of end_of_quest as 1 and store the ans from the file in the ans of the last node
-            if (i == quest_len - 1)
-            {
-                tmp->end_of_quest = 1;
-                strcpy(tmp->ans, ans);
-            }
+            // if (i == quest_len - 1)
+            // {
+            //     tmp->end_of_quest = 1;
+            //     strcpy(tmp->ans, ans);
+            // }
         }
 
+        // After reaching the end node (i.e., last character) make the value of end_of_quest as 1 and store the ans from the file in the ans of the last node
+        tmp->end_of_quest = 1;
+        strcpy(tmp->ans, ans);
+
         tmp = root;
+         free(line);
+    line = NULL;
+    len = 0;
     }
     fclose(fp);
+    free(line);
     return root;
 }
 
@@ -154,6 +174,7 @@ char *search(node_trie *root, char *key)
     }
 }
 
+// Helper function to remove spaces from a string
 void remove_spaces(char a[])
 {
     int i = 0;
@@ -169,17 +190,19 @@ void remove_spaces(char a[])
     a[j] = '\0';
 }
 
-// to check whether the node is the last node
-int isLastNode(node_trie *root)
-{
-    for (int i = 0; i < 26; i++)
+int isLastNode(node_trie* root) {
+    for (int i = 0; i < 26; i++) {
         if (root->child[i])
             return 0;
+    }
     return 1;
 }
 
 void suggestions(node_trie *root, char currPrefix[])
 {
+    // Store the original length of currPrefix
+    int originalLength = strlen(currPrefix);
+
     // if we get the complete question print the entire question
     if (root->end_of_quest)
     {
@@ -194,32 +217,29 @@ void suggestions(node_trie *root, char currPrefix[])
 
     for (int i = 0; i < 26; i++)
     {
-
         if (root->child[i])
         {
             // append current character to currPrefix string
-
             int p = 97 + i;
             char c = (char)p;
-            
 
             if (root->space == 1)
             {
-                strcat(currPrefix,"");
-                //currPrefix[strlen(currPrefix) - 1] = ' ';
+                char sp = ' ';
+                strncat(currPrefix,&sp, 1);
             }
-            
+
             strncat(currPrefix, &c, 1);
 
             // recur over the rest
             suggestions(root->child[i], currPrefix);
 
-            // after we get the entire question make it a string
-            int len = strlen(currPrefix);
-            currPrefix[len - 1] = '\0';
+            // Reset currPrefix to its original length
+            currPrefix[originalLength] = '\0';
         }
     }
 }
+
 
 // print suggestions for given query prefix.
 int printAutoSuggestions(node_trie *root, char query[])

@@ -1,11 +1,20 @@
-# define MAX 200000
+// # define MAX 200000
 
-typedef struct node_trie{
+// typedef struct node_trie{
+//     struct node_trie* child[26];
+//     int end_of_quest;
+//     int space;
+//     char ans[200000];
+// }node_trie;
+
+#define MAX 200000
+
+typedef struct node_trie {
     struct node_trie* child[26];
     int end_of_quest;
     int space;
-    char ans[200000];
-}node_trie;
+    char ans[MAX];
+} node_trie;
 
 node_trie *insert_from_file();
 
